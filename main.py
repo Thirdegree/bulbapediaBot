@@ -17,9 +17,20 @@ def fix_paragraph(body):
 
 def get_pokemon(url):
 	global soup 
-	pattern = r'id="Biology"'
-	soup = BeautifulSoup(requests.get(url).text)
-	in_soup = re.search(pattern, soup.prettify())
-	if in_soup != None:
-		return fix_paragraph(get_paragraphs())
-	else: return False
+	tries = 0
+	trying = True
+	while trying:
+		try:
+			pattern = r'id="Biology"'
+			soup = BeautifulSoup(requests.get(url).text)
+			in_soup = re.search(pattern, soup.prettify())
+			if in_soup != None:
+				return fix_paragraph(get_paragraphs())
+			else: return False
+		except (requests.exceptions.ConnectionError):
+			if tries >3:
+				break
+			sleep(5)	
+			tries += 1
+	if not trying:
+		return False
