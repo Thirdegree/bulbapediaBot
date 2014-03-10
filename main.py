@@ -18,4 +18,25 @@ def find_pokelink(body):
 	is_link = re.search(pattern, body)
 	if is_link != None:
 		return is_link.groups()[:2]
-	else: return False
+	else: return (False, False)
+
+def get_poke_info(body):
+	link, poke_name = find_pokelink(body)
+	if not link:
+		return (False, False)
+	para = pokemon_finder.get_pokemon(link)
+	return (link, para, poke_name)
+
+def main():
+	comments = r.get_comments("Thirdegree")
+	for post in comments:
+		if post.id not in done:
+			done.append(post.id)
+			link, para, poke_name = get_poke_info(post.body)
+			if not para:
+				continue
+			post.reply("[**%s**](%s)\n\n%s"%(poke_name, link, para))
+
+
+if __name__ == '__main__':
+	
