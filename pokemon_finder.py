@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 def get_paragraphs():
 	para = ""
-	temp = soup.find(id="Biology").next_elements#This gets the right pattern
+	temp = soup.find(id="Biology").next_elements
 	for element in temp:
 		if element.name == 'p':
 			para += ">" + re.sub(r"<\/{0,1}p>", "", element.prettify().replace("\n", ""))+ "\n\n"
@@ -21,6 +21,7 @@ def fix_paragraph(body):
 		if matches == None:
 			break
 		matches = matches.groups()
+		#bulbapedia formats internal links annoyingly, necessitating this
 		if is_external:
 			body = re.sub(re.escape(matches[0]), "[%s](%s)"%(matches[2].strip(), matches[1]), body)	
 		else:
