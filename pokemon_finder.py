@@ -13,19 +13,23 @@ def get_paragraphs():
 
 def fix_paragraph(body):
 	pattern = re.compile(r'(<a.+?href="(.+?)".*?>(.*?)<\/a>)', re.DOTALL)
-	pattern2 = re.compile(r'<a.*?class="extiw"')
+	#pattern2 = re.compile(r'<a[^>]*?class="extiw".*?>')
+	pattern2 = re.compile(r'^/wiki/')
+	pattern3 = re.compile(r'<sup.*?/sup>', re.DOTALL)
 	while True:
 		#[full, link, word]
 		matches = re.search(pattern, body)
-		is_external = re.search(pattern2, body)
+		#is_external = re.search(pattern2, body)
 		if matches == None:
 			break
 		matches = matches.groups()
 		#bulbapedia formats internal links annoyingly, necessitating this
-		if is_external:
-			body = re.sub(re.escape(matches[0]), "[%s](%s)"%(matches[2].strip(), matches[1]), body)	
+		body = re.sub(pattern3, "", body)
+		is_internal = re.search(pattern2, matches[1])
+		if not is_internal:
+			body = re.sub(re.escape(matches[0]), "[%s](%s)"%(matches[2].strip(), matches[1].replace("(","\\(").replace(")","\\)")), body)	
 		else:
-			body = re.sub(re.escape(matches[0]), "[%s](http://bulbapedia.bulbagarden.net%s)"%(matches[2].strip(),matches[1]), body)
+			body = re.sub(re.escape(matches[0]), "[%s](http://bulbapedia.bulbagarden.net%s)"%(matches[2].strip(),matches[1].replace("(","\\(").replace(")","\\)")), body)
 	return body
 
 def get_pokemon(url):

@@ -32,7 +32,7 @@ def get_poke_info(body):
 def main():
 	comments = r.get_comments("Thirdegree")
 	for post in comments:
-		if post.id not in done and post.author.name != USERNAME:
+		if post.id not in done and post.author.name not in ["autoPokedex", "thirds_test_bot"]:
 			done.append(post.id)
 			link, para, poke_name = get_poke_info(post.body)
 			if not para:
